@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Pagamento</title>
+	<h:outputStylesheet library="css" name="styles.css" />
+	<h:outputStylesheet library="primefaces"
+		name="primeicons/primeicons.css" />
+
+</h:head>
+<h:body>
+	<h1>Por favor, informe os dados do pagamento</h1>
+	<h:form id="frm">
+		<p:menuButton value="Menu">
+			<p:menuitem value="Nova compra" />
+			<p:menuitem value="Pagamentos" immediate="true" action="/pagamentos" />
+			<p:separator />
+			<p:menuitem value="Configurações" icon="pi pi-cog" />
+			<p:separator />
+			<p:menuitem value="Sair" icon="pi pi-sign-out" />
+		</p:menuButton>
+		<h:panelGrid columns="3">
+			<p:outputLabel value="Valor:" for="valor" />
+			<p:inputNumber value="#{pagamentoBean.pagamento.valor}" id="valor"
+				converterMessage="O valor da compra deve ser informado em Reais"
+				required="true" requiredMessage="#{msgs.obrigatorio}"
+				maxValue="100000" symbol="R$ " decimalPlaces="2" />
+			<h:message for="valor" styleClass="erro" />
+
+			<p:outputLabel value="Bandeira do cartão:" for="bandeira"/>
+			<p:selectOneMenu value="#{pagamentoBean.pagamento.bandeira}" id="bandeira"
+			                    required="true">
+			    <f:selectItems value="#{pagamentoBean.listarBandeiras}"/>
+			</p:selectOneMenu>
+			<h:message for="bandeira" styleClass="erro" />
+			
+			<p:outputLabel value="Cartão de crédito:" for="cartao" />
+			<p:inputMask id="cartao" value="#{pagamentoBean.pagamento.cartao}"
+				mask="9999.9999.9999.9999" />
+
+			<h:message for="cartao" styleClass="erro" />
+
+			<p:outputLabel value="Data de validade (Mês/Ano):" for="data" />
+			<h:inputText value="#{pagamentoBean.pagamento.validade}" id="data">
+				<f:convertDateTime pattern="MM/yyyy" />
+			</h:inputText>
+			<h:message for="data" styleClass="erro" />
+		</h:panelGrid>
+		<p:commandButton value="Pagar" action="#{pagamentoBean.pagar}"
+			icon="pi pi-money-bill" ajax="false" />
+		<p:commandButton value="Cancelar" action="/cancelamento"
+			immediate="true" icon="pi pi-times" ajax="false" iconPos="right" />
+	</h:form>
+</h:body>
+</html>

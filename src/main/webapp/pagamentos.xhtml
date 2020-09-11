@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Pagamentos</title>
+	<h:outputStylesheet library="css" name="styles.css" />
+	<h:outputStylesheet library="primefaces"
+		name="primeicons/primeicons.css" />
+
+</h:head>
+<h:body>
+	<h1>Pagamentos Realizados</h1>
+	<h:form id="frm">
+		<p:menuButton value="Menu">
+			<p:menuitem value="Nova compra" action="/index" />
+			<p:menuitem value="Pagamentos" action="#" />
+			<p:separator />
+			<p:menuitem value="Configurações" icon="pi pi-cog" />
+			<p:separator />
+			<p:menuitem value="Sair" icon="pi pi-sign-out" />
+		</p:menuButton>
+		<p:growl id="messages" showDetail="true" />
+		<p:dataTable value="#{pagamentoBean.pagamentos}" var="p"
+			paginator="true" rows="3" paginatorPosition="top"
+			paginatorTemplate="{PreviousPageLink} {CurrentPageReport} {NextPageLink} {RowsPerPageDropdown}"
+			rowsPerPageTemplate="2,3,10" sortMode="multiple" editable="true"
+			editMode="row">
+			<p:ajax event="rowEdit" listener="#{pagamentoBean.onEdit}"
+				update=":frm:messages" />
+			<p:ajax event="rowEditCancel" listener="#{pagamentoBean.onCancel}"
+				update=":frm:messages" />
+			<p:column headerText="Valor" sortBy="#{p.valor}"
+				filterBy="#{p.valor}" filterMatchMode="contains">
+				<p:cellEditor>
+					<f:facet name="output">
+						<h:outputText value="#{p.valor}">
+							<f:convertNumber type="currency" />
+						</h:outputText>
+					</f:facet>
+					<f:facet name="input">
+						<p:inputNumber value="#{p.valor}" symbol="R$ " decimalPlaces="2"
+							maxValue="100000" />
+					</f:facet>
+				</p:cellEditor>
+			</p:column>
+			<p:column headerText="Bandeira do Cartão">
+				<p:cellEditor>
+					<f:facet name="output">
+						#{p.bandeira}
+					</f:facet>
+					<f:facet name="input">
+						<p:selectOneMenu value="#{p.bandeira}"
+							id="bandeira" required="true">
+							<f:selectItems value="#{pagamentoBean.listarBandeiras}" />
+						</p:selectOneMenu>
+					</f:facet>
+				</p:cellEditor>
+			</p:column>
+			<p:column headerText="Numero do Cartão">
+				<p:cellEditor>
+					<f:facet name="output">
+						#{p.cartao}
+					</f:facet>
+					<f:facet name="input">
+						<p:inputMask value="#{p.cartao}" mask="9999.9999.9999.9999" />
+					</f:facet>
+				</p:cellEditor>
+			</p:column>
+			<p:column headerText="Validade" sortBy="#{p.validade}">
+				<p:cellEditor>
+					<f:facet name="output">
+						<h:outputText value="#{p.validade}">
+							<f:convertDateTime pattern="MM/yyyy" />
+						</h:outputText>
+					</f:facet>
+					<f:facet name="input">
+						<h:inputText value="#{p.validade}">
+							<f:convertDateTime pattern="MM/yyyy" />
+						</h:inputText>
+					</f:facet>
+				</p:cellEditor>
+			</p:column>
+			<p:column headerText="Editar">
+				<p:rowEditor />
+			</p:column>
+		</p:dataTable>
+	</h:form>
+</h:body>
+</html>
